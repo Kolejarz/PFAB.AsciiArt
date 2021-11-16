@@ -348,3 +348,4 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/PFAB.AsciiArt.Runner/Properties/launchSettings.json
