@@ -1,5 +1,7 @@
 ﻿using System;
-using System.IO;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using Utility.CommandLine;
 
 namespace PFAB.AsciiArt.Runner
@@ -13,8 +15,19 @@ namespace PFAB.AsciiArt.Runner
         {
             Arguments.Populate();
 
-            using var file = File.Open(Path, FileMode.Open);
-            Console.WriteLine(file.Length);
+            using var image = Image.Load<Argb32>(Path);
+            Console.WriteLine($"{image.Width}x{image.Height}");
+
+            image.Mutate(i => i.Resize(0, 128));
+            for (var y = 0; y < image.Height; y++)
+            {
+                Console.Write(y.ToString().PadRight(4));
+                foreach(var pixel in image.GetPixelRowSpan(y))
+                {
+                    Console.Write(pixel);
+                }
+                Console.WriteLine();
+            }
         }
     }
 }
