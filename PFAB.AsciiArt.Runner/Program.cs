@@ -18,13 +18,14 @@ namespace PFAB.AsciiArt.Runner
             using var image = Image.Load<Argb32>(Path);
             Console.WriteLine($"{image.Width}x{image.Height}");
 
-            image.Mutate(i => i.Resize(0, 128));
+            image.Mutate(i => i.Resize(0, 190));
             for (var y = 0; y < image.Height; y++)
             {
                 Console.Write(y.ToString().PadRight(4));
                 foreach(var pixel in image.GetPixelRowSpan(y))
                 {
-                    Console.Write(pixel);
+                    var c = PixelConverter.GetAscii(pixel);
+                    Console.Write(new string(c, 3));
                 }
                 Console.WriteLine();
             }
