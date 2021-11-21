@@ -1,25 +1,39 @@
 ﻿using System;
+using System.Linq;
 using PFAB.AsciiArt.Runner.BrightnessCalculator;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace PFAB.AsciiArt.Runner.PixelConverter
 {
-    public static class PixelConverter
+    public class PixelConverter
     {
         private const string BrightnessMap = "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+        private readonly BrightnessCalculator.BrightnessCalculator _brightnessCalculator;
+        private readonly bool _invertedMode;
 
-        public static char GetAscii(Argb32 pixel, int brightnessCalculationMode)
+        public PixelConverter(BrightnessCalculationMode brightnessCalculationMode, bool invertedMode = false)
         {
-            var brightnessCalculator = (brightnessCalculationMode % 3) switch
+            _brightnessCalculator = brightnessCalculationMode switch
             {
-                0 => BrightnessCalculatorFactory.BrightnessCalculator().WithAverageBrightnessCalculationStrategy(),
-                1 => BrightnessCalculatorFactory.BrightnessCalculator().WithLightnessBrightnessCalculationStrategy(),
-                2 => BrightnessCalculatorFactory.BrightnessCalculator().WithLuminosityBrightnessCalculationStrategy(),
+                BrightnessCalculationMode.Average => BrightnessCalculatorFactory.BrightnessCalculator()
+                    .WithAverageBrightnessCalculationStrategy(),
+                BrightnessCalculationMode.Lightness => BrightnessCalculatorFactory.BrightnessCalculator()
+                    .WithLightnessBrightnessCalculationStrategy(),
+                BrightnessCalculationMode.Luminosity => BrightnessCalculatorFactory.BrightnessCalculator()
+                    .WithLuminosityBrightnessCalculationStrategy(),
                 _ => throw new ArgumentOutOfRangeException(nameof(brightnessCalculationMode))
             };
-            
-            var brightness = brightnessCalculator.GetBrightness(pixel);
-            return BrightnessMap[brightness % BrightnessMap.Length];
+            _invertedMode = invertedMode;
+        }
+
+        public AsciiPixel GetAscii(Argb32 pixel)
+        {
+            var brightness = _brightnessCalculator.GetBrightness(pixel);
+            var character =  _invertedMode ? 
+                BrightnessMap[brightness % BrightnessMap.Length] :
+                BrightnessMap.Reverse().ToArray()[brightness % BrightnessMap.Length];
+
+            return new AsciiPixel { Character = character };
         }
     }
 }
