@@ -1,4 +1,7 @@
 ﻿using System;
+using PFAB.AsciiArt.Runner.BrightnessCalculator;
+using PFAB.AsciiArt.Runner.Printers;
+using PFAB.AsciiArt.Runner.PixelConverter;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -11,29 +14,32 @@ namespace PFAB.AsciiArt.Runner
         [Argument('p', "path", "Path to the image that would be processed to ASCII")]
         private static string Path { get; set; }
 
+        [Argument('m', "matrixMode", "")]
+        private static bool MatrixMode { get; set; }
+
         static void Main(string[] args)
         {
             Arguments.Populate();
+            MatrixMode = true;
 
             using var image = Image.Load<Argb32>(Path);
-            Console.WriteLine($"{image.Width}x{image.Height}");
-
-            image.Mutate(i => i.Resize(0, 190));
+            image.Mutate(i => i.Resize(0, 80));
 
             var counter = 0;
             do
             {
-                Console.Clear();
+                using var printer = MatrixMode ? new ConsoleMatrixPrinter() : new ConsolePrinter();
+                var converter = new PixelConverter.PixelConverter((BrightnessCalculationMode)(counter % 3), counter % 6 > 2);
+
                 for (var y = 0; y < image.Height; y++)
                 {
-                    Console.Write(y.ToString().PadRight(4));
                     foreach (var pixel in image.GetPixelRowSpan(y))
                     {
-                        var c = PixelConverter.PixelConverter.GetAscii(pixel, counter);
-                        Console.Write(new string(c, 3));
+                        var c = converter.GetAscii(pixel);
+                        printer.PrintAsciiPixel(c);
                     }
 
-                    Console.WriteLine();
+                    printer.NewLine();
                 }
 
                 counter++;
