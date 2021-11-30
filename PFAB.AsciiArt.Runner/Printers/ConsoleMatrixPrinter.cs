@@ -12,5 +12,10 @@ namespace PFAB.AsciiArt.Runner.Printers
         {
             Console.ForegroundColor = ConsoleColor.DarkGreen;
         }
+
+        public override void PrintAsciiPixel(AsciiPixel pixel)
+        {
+            PrintCharacter(pixel.Character);
+        }
     }
 }
