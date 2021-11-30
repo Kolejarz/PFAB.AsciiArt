@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using PFAB.AsciiArt.Runner.BrightnessCalculator;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace PFAB.AsciiArt.Runner.PixelConverter
@@ -29,11 +30,15 @@ namespace PFAB.AsciiArt.Runner.PixelConverter
         public AsciiPixel GetAscii(Argb32 pixel)
         {
             var brightness = _brightnessCalculator.GetBrightness(pixel);
-            var character =  _invertedMode ? 
+            var character = _invertedMode ?
                 BrightnessMap[brightness % BrightnessMap.Length] :
                 BrightnessMap.Reverse().ToArray()[brightness % BrightnessMap.Length];
 
-            return new AsciiPixel { Character = character };
+            return new AsciiPixel
+            {
+                Character = character,
+                ForegroundColor = new Color(pixel)
+            };
         }
     }
 }

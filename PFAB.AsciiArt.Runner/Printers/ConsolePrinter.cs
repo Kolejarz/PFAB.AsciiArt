@@ -2,19 +2,14 @@
 
 namespace PFAB.AsciiArt.Runner.Printers
 {
-    public class ConsolePrinter : IPrinter, IDisposable
+    public abstract class ConsolePrinter : IPrinter, IDisposable
     {
-        public ConsolePrinter()
+        protected ConsolePrinter()
         {
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.Black;
         }
 
-        public void PrintAsciiPixel(AsciiPixel pixel)
-        {
-            Console.Write(new string(pixel.Character, 3));
-        }
+        public abstract void PrintAsciiPixel(AsciiPixel pixel);
 
         public void NewLine()
         {
@@ -24,6 +19,11 @@ namespace PFAB.AsciiArt.Runner.Printers
         public void Dispose()
         {
             Console.ResetColor();
+        }
+
+        protected void PrintCharacter(char character)
+        {
+            Console.Write(new string(character, 2));
         }
     }
 }
