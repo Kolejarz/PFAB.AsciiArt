@@ -10,11 +10,11 @@ Call from command line with following parameters
 |Short   |Long                    |Function
 |-----   |----                    |--------
 |*s*     |source                  |Source of image to be processed. [file, webcam]
-|*b*     |brightnessCalculation   |Brightness calculation mode. [average, |lightness, luminosity]
+|*b*     |brightnessCalculation   |Brightness calculation mode. [average, lightness, luminosity]
 |*c*     |colorMode               |Color mode. [default, matrix, color]
 |*i*     |invertedMode            |Inverted brightness calculation.
-|*p*     |path                    |Path to the image that would be processed to |ASCII
-|*h*     |help                    |Display help message
+|*p*     |path                    |Path to the image that would be processed to ASCII.
+|*h*     |help                    |Display help message.
 
 ## Example
 
